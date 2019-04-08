@@ -1,0 +1,90 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+#include<string.h>
+double Calculate(int k,int a,int b){
+	
+	if(k==0)//+
+	return a+b;
+	if(k==1)//-
+	return a-b;
+	if(k==2)//*
+	return a*b;
+	if(k==3)//%
+	{
+		if(b!=0)
+		return a/b;
+	}
+}
+void main(){
+	int n,i,q,ans[10000];
+	int temp[5];//三个数加两个符号
+	char Symbol[]={'+','-','X','/','=','(',')','\0'};
+	while(1){
+	printf("请输入需要的算式数量\n");
+	scanf("%d",&n);
+	srand((unsigned)time(NULL));/*播种子*/
+	for(i=1;i<=n;i++){
+beg:
+		temp[0]=rand()%100;//数字
+		temp[1]=rand()%100;
+		temp[2]=rand()%100;
+		temp[3]=rand()%4;//符号
+		temp[4]=rand()%4;
+		//考虑除法即可，负数也是100以内
+		if(temp[3]==0||temp[3]==1){//第一位符号为加或减，判断第二位符号优先度
+			if(temp[4]==0||temp[4]==1){//两个符号都是加减，无需判断
+				ans[i]=Calculate(temp[4],Calculate(temp[3],temp[0],temp[1]),temp[2]);
+				if(ans[i]>100){
+					goto beg;
+				}
+				else{
+				printf("%d%c%d%c%d%c\n",temp[0],Symbol[temp[3]],temp[1],Symbol[temp[4]],temp[2],Symbol[4]);
+				}
+			}
+			else{//第二位符号优先度高于第一位  
+				if(temp[2]==0){//不能除以0
+					goto beg;
+				}
+				ans[i]=Calculate(temp[3],temp[0],Calculate(temp[4],temp[1],temp[2]));
+				if(ans[i]>100){
+					goto beg;
+				}
+				else{
+				printf("%d%c%d%c%d%c\n",temp[0],Symbol[temp[3]],temp[1],Symbol[temp[4]],temp[2],Symbol[4]);
+				}
+			}
+		}else{//第一位优先度高，从左至右
+			if(!(temp[3]==4&&temp[1]==0)|!(temp[4]==4&&temp[2]==0)){
+				goto beg;
+			}
+			ans[i]=Calculate(temp[4],Calculate(temp[3],temp[0],temp[1]),temp[2]);
+			if(ans[i]>100){
+					goto beg;
+				}else{
+				printf("%d%c%d%c%d%c\n",temp[0],Symbol[temp[3]],temp[1],Symbol[temp[4]],temp[2],Symbol[4]);
+				}
+		}
+		}
+	printf("输入1查看答案\n");
+	scanf("%d",&q);
+	if(q==1)
+	{
+		for(i=1;i<=n-1;i++)
+		{
+			printf("%d  ",ans[i]);
+		}
+		printf("%d\n",ans[i]);
+	}
+	printf("输入1继续，输入0结束\n");
+	scanf("%d",&q);
+	if(q==1)
+	{
+		continue;
+	}
+	else
+	{
+		break;
+	}
+	}
+}
